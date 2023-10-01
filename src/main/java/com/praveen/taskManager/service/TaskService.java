@@ -3,7 +3,6 @@ package com.praveen.taskManager.service;
 import com.praveen.taskManager.entity.TaskEntity;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.text.SimpleDateFormat;
@@ -42,4 +41,27 @@ public class TaskService {
 
          return  null;
     }
+
+    public TaskEntity updateTask(int id, String desc, String deadline, Boolean status) throws ParseException {
+        TaskEntity task = getById(id);
+
+        if(task == null){
+            return  null;
+        }
+
+        if(desc != null){
+            task.setDesc(desc);
+        }
+        if(deadline != null){
+            task.setDeadline(deadlineFormatter.parse(deadline));
+        }
+
+        if(status != null){
+            task.setStatus(status);
+        }
+
+        return task;
+    }
+
+
 }

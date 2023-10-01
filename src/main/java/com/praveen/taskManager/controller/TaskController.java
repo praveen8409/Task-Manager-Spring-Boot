@@ -1,7 +1,7 @@
 package com.praveen.taskManager.controller;
 
-import com.praveen.taskManager.dto.ErrorResponseDTO;
-import com.praveen.taskManager.dto.TaskDTO;
+import com.praveen.taskManager.dto.CreateTaskDTO;
+import com.praveen.taskManager.dto.UpdateTaskDTO;
 import com.praveen.taskManager.entity.TaskEntity;
 import com.praveen.taskManager.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +38,19 @@ public class TaskController {
     }
 
     @PostMapping
-    public  ResponseEntity<TaskEntity> addTask(@RequestBody TaskDTO body) throws ParseException {
+    public  ResponseEntity<TaskEntity> addTask(@RequestBody CreateTaskDTO body) throws ParseException {
         TaskEntity task = taskService.addTask(body.getTitle(), body.getDesc(), body.getDeadline());
 
         return new ResponseEntity<>(task,HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<TaskEntity> updateTask(@PathVariable("id") Integer id, @RequestBody UpdateTaskDTO body) throws ParseException {
+       TaskEntity task = taskService.updateTask(id,body.getDesc(), body.getDeadline(), body.getStatus());
+        if(task == null){
+            return ResponseEntity.notFound().build();
+        }
+       return new ResponseEntity<>(task,HttpStatus.OK);
     }
 
 
