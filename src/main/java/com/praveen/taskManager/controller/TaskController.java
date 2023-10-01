@@ -1,9 +1,12 @@
 package com.praveen.taskManager.controller;
 
 import com.praveen.taskManager.dto.CreateTaskDTO;
+import com.praveen.taskManager.dto.TaskResponseDTO;
 import com.praveen.taskManager.dto.UpdateTaskDTO;
 import com.praveen.taskManager.entity.TaskEntity;
+import com.praveen.taskManager.service.NoteService;
 import com.praveen.taskManager.service.TaskService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +18,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/task")
 public class TaskController {
-
+    private ModelMapper modelMapper = new ModelMapper();
     @Autowired
     private  TaskService taskService;
 //    public TaskController(TaskService taskService){
 //        this.taskService = taskService;
 //    }
+
+    @Autowired
+    private NoteService noteService;
 
     @GetMapping
     public ResponseEntity<List<TaskEntity>> getAllTask(){
@@ -28,13 +34,16 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public  ResponseEntity<TaskEntity> getById(@PathVariable("id") Integer id){
+    public  ResponseEntity<TaskResponseDTO> getById(@PathVariable("id") Integer id){
         TaskEntity task = taskService.getById(id);
+        var notes = noteService.getNotesForTask(id);
         if(task == null){
             return ResponseEntity.notFound().build();
         }
 
-        return new ResponseEntity<>(task,HttpStatus.FOUND);
+        var taskResponse = modelMapper.map(task, TaskResponseDTO.class);
+        taskResponse.setNotes(notes);
+        return new ResponseEntity<>(taskResponse,HttpStatus.FOUND);
     }
 
     @PostMapping
