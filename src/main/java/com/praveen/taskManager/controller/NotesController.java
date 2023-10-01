@@ -18,12 +18,25 @@ public class NotesController {
     @Autowired
     private NoteService noteService;
 
+    /**
+     * Retrieve a list of notes associated with a specific task.
+     *
+     * @param taskId The ID of the task for which notes are requested.
+     * @return ResponseEntity containing a list of NoteEntity objects and HTTP status OK.
+     */
     @GetMapping
     public ResponseEntity<List<NoteEntity>> getAllNotes(@PathVariable("taskId") Integer taskId){
          var notes = noteService.getNotesForTask(taskId);
          return  new ResponseEntity<>(notes, HttpStatus.OK);
     }
 
+    /**
+     * Create a new note associated with a specific task.
+     *
+     * @param taskId The ID of the task to which the note is added.
+     * @param body   The CreateNoteDTO object containing note details.
+     * @return ResponseEntity containing a CreateNoteResponseDTO object with task and note details and HTTP status OK.
+     */
     @PostMapping
     public ResponseEntity<CreateNoteResponseDTO> addNote(@PathVariable("taskId") Integer taskId, @RequestBody CreateNoteDTO body){
        var note = noteService.addNotesForTask(taskId, body.getTitle(), body.getBody());

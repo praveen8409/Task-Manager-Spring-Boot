@@ -28,11 +28,24 @@ public class TaskController {
     @Autowired
     private NoteService noteService;
 
+    /**
+     * Retrieve a list of all tasks.
+     *
+     * @return ResponseEntity containing a list of TaskEntity objects and HTTP status FOUND.
+     */
+
     @GetMapping
     public ResponseEntity<List<TaskEntity>> getAllTask(){
         return new ResponseEntity<>(taskService.getAllTask(), HttpStatus.FOUND);
     }
 
+    /**
+     * Retrieve a specific task by its ID.
+     *
+     * @param id The ID of the task to retrieve.
+     * @return ResponseEntity containing a TaskResponseDTO object with associated notes and HTTP status FOUND,
+     *         or ResponseEntity with HTTP status NOT_FOUND if the task does not exist.
+     */
     @GetMapping("/{id}")
     public  ResponseEntity<TaskResponseDTO> getById(@PathVariable("id") Integer id){
         TaskEntity task = taskService.getById(id);
@@ -46,12 +59,30 @@ public class TaskController {
         return new ResponseEntity<>(taskResponse,HttpStatus.FOUND);
     }
 
+    /**
+     * Create a new task.
+     *
+     * @param body The CreateTaskDTO object containing task details.
+     * @return ResponseEntity containing the created TaskEntity object and HTTP status OK.
+     * @throws ParseException if there is an issue parsing the deadline date.
+     */
+
     @PostMapping
     public  ResponseEntity<TaskEntity> addTask(@RequestBody CreateTaskDTO body) throws ParseException {
         TaskEntity task = taskService.addTask(body.getTitle(), body.getDesc(), body.getDeadline());
 
         return new ResponseEntity<>(task,HttpStatus.OK);
     }
+
+    /**
+     * Update an existing task by its ID.
+     *
+     * @param id   The ID of the task to update.
+     * @param body The UpdateTaskDTO object containing updated task details.
+     * @return ResponseEntity containing the updated TaskEntity object and HTTP status OK,
+     *         or ResponseEntity with HTTP status NOT_FOUND if the task does not exist.
+     * @throws ParseException if there is an issue parsing the deadline date.
+     */
 
     @PutMapping("/{id}")
     public ResponseEntity<TaskEntity> updateTask(@PathVariable("id") Integer id, @RequestBody UpdateTaskDTO body) throws ParseException {
